@@ -1,10 +1,17 @@
-import pandas as pd
+import pickle
 
-# Load your CSV
-df = pd.read_csv("final_cleaned_data.csv")
+with open('label_encoders.pkl', 'rb') as f:
+    encoders = pickle.load(f)
 
-# Drop one column
-df = df.drop(columns=["distance_from_center","Incident_Ward","INJURY_COLLISIONS","AUTOMOBILE","PEDESTRIAN","MCI_CATEGORY_encoded","hourly_incident_rate"])
+neighbourhood_encoder = encoders['NEIGHBOURHOOD_CLEAN']
 
-# Save back to CSV
-df.to_csv("final_cleaned_data.csv", index=False)
+with open('neighbourhood_encoding.txt', 'w') as f:
+    f.write("COMPLETE NEIGHBOURHOOD ENCODING\n")
+    f.write("=" * 50 + "\n")
+    f.write(f"Total unique neighbourhoods: {len(neighbourhood_encoder.classes_)}\n")
+    f.write("=" * 50 + "\n\n")
+    
+    for i, neighbourhood_name in enumerate(neighbourhood_encoder.classes_):
+        f.write(f"{i:3d} → {neighbourhood_name}\n")
+
+print(f"✓ Saved complete list to 'neighbourhood_encoding.txt'")

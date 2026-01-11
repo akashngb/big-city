@@ -7,25 +7,17 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-<<<<<<< HEAD
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { WeatherWidget } from "@/components/bento/widgets/weather";
 import NewsWidget from "@/components/bento/widgets/news/news";
 import { Github } from "@/components/bento/widgets/socials/github";
-=======
-import Link from "next/link";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { WeatherWidget } from "@/components/bento/widgets/weather";
-import NewsWidget from "@/components/bento/widgets/news/news";
-import { Github } from "@/components/bento/widgets/socials/github";
-import { Linkedin } from "@/components/bento/widgets/socials/linkedin";
-import { useState } from "react";
->>>>>>> 45e7137cec3bb53ba8e105d9428bb7270db4182e
 import ExpandedWeather from "@/components/bento/widgets/weather/ExpandedWeather";
 import Devpost from "@/components/bento/widgets/socials/devpost";
 import ExpandedNews from "@/components/bento/widgets/news/ExpandedNews";
@@ -33,6 +25,7 @@ import ExpandedEmpty from "@/components/bento/widgets/ExpandedEmpty";
 import BackIcon from "@/components/bento/widgets/map/backIcon";
 import { Badge } from "@/components/ui/badge";
 import ChatUi from "@/components/chat";
+import { Linkedin } from "@/components/bento/widgets/socials/linkedin";
 
 const routes = [
   {
@@ -50,6 +43,8 @@ const routes = [
 ];
 
 export default function Page() {
+  const posts = useQuery(api.functions.posts.listPosts, { limit: 5 });
+
   return (
     <div className="w-screen h-screen relative">
       <Sheet>
@@ -76,15 +71,13 @@ export default function Page() {
               </DialogContent>
             </Dialog>
 
-            <div className="bento-card p-6 overflow-y-hidden row-span-3 col-span-5 row-start-2 col-start-6 animate-slide-up fill-mode-[both] [animation-delay:0.1s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]">
-              {/* <h3 className="text-xl font-bold mb-5 text-gray-900">My Routes</h3> */}
+            <div className="bento-card p-6 overflow-y-hidden row-span-3 col-span-5 row-start-2 col-start-6 animate-slide-up fill-mode-[both] [animation-delay:0.1s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)] ">
               <div className="space-y-4">
                 {routes.map((route, index) => (
                   <div
                     key={index}
-                    className="group relative bg-white/40 rounded-xl p-4 hover:bg-white/60 transition-all duration-300 hover:shadow-md"
+                    className="group relative bg-white/40 rounded-xl p-4 hover:bg-white/60 transition-all duration-300 hover:shadow-md "
                   >
-                    {/* Top section with locations */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <div className="shrink-0 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-blue-200"></div>
@@ -117,7 +110,6 @@ export default function Page() {
                       </div>
                     </div>
 
-                    {/* Bottom section with distance and duration */}
                     <div className="flex items-center justify-between pt-3 border-t border-gray-200/50">
                       <div className="flex items-center gap-1.5 text-xs text-gray-600">
                         <svg
@@ -159,16 +151,56 @@ export default function Page() {
             </div>
 
             <div className="bento-card p-4 overflow-hidden row-span-3 col-span-1 row-start-2 col-start-11 animate-slide-up fill-mode-[both] [animation-delay:0.2s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]">
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-full flex flex-col items-center justify-between">
                 <Github />
+                <Linkedin />
+                <Devpost className="w-10 h-10" />
               </div>
             </div>
 
-            <div className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-2 col-start-12 animate-slide-up fill-mode-[both] [animation-delay:0.3s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]"></div>
-            {/* <div
-              className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-6 col-start-2 animate-slide-up fill-mode-[both] [animation-delay:0.4s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]"
-              onClick={() => setExpandedCard("card5")}
-            ></div> */}
+            <div className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-2 col-start-12 animate-slide-up fill-mode-[both] [animation-delay:0.3s] bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]">
+              <div className="w-full h-full flex flex-col gap-2 overflow-y-auto">
+                {posts === undefined ? (
+                  <div className="flex items-center justify-center h-full text-gray-500">
+                    Loading posts...
+                  </div>
+                ) : posts && posts.length > 0 ? (
+                  posts.map((post) => (
+                    <div
+                      key={post._id}
+                      className="bg-white/40 rounded-lg p-3 hover:bg-white/60 transition-all duration-300 border border-gray-200/50 shrink-0"
+                    >
+                      <p className="text-xs font-semibold text-gray-900 truncate mb-1">
+                        {post.content.substring(0, 50)}...
+                      </p>
+                      {post.images && post.images.length > 0 && (
+                        <img
+                          src={post.images[0].url}
+                          alt={post.images[0].alt}
+                          className="w-full h-12 object-cover rounded-md mb-1"
+                        />
+                      )}
+                      <div className="flex gap-1 flex-wrap">
+                        {post.tags &&
+                          post.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-500">
+                    No posts yet
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-6 col-start-2 animate-slide-up fill-mode-[both] [animation-delay:0.4s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]"></div>
             {/* <div
               className="bento-card p-4 overflow-hidden row-span-4 col-span-4 row-start-4 col-start-12 animate-slide-up fill-mode-[both] [animation-delay:0.6s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]"
               onClick={() => setExpandedCard("news")}

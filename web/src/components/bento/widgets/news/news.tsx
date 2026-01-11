@@ -10,12 +10,10 @@ import { fetchGNews } from "@/utils/gnews";
 import { useState, useEffect } from "react";
 
 type newsProps = {
-  title: string;
-  url: string;
-  imageUrl: string;
+  expanded: boolean;
 };
 
-export default function NewsWidget() {
+export default function NewsWidget(props: newsProps) {
   const [newsData, setNewsData] = useState<any>(null);
   useEffect(() => {
     async function getNews() {

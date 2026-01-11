@@ -8,6 +8,7 @@ export const env = createEnv({
     OPENROUTER_API_KEY: z.string().min(1),
     GCLOUD_API_KEY: z.string().min(1),
     INTERNAL_CONVEX_SECRET: z.string().min(1),
+    EXA_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),

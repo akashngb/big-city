@@ -26,9 +26,12 @@ import { Badge } from "@/components/ui/badge";
 import { ChatUi } from "@/components/chat";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Calendar, MapPin, Clock, Tag } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
+import { useQuery as useReactQuery } from "@tanstack/react-query";
+import { scrapeEvents } from "@/server/events";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const routes = [
   {
@@ -48,9 +51,27 @@ const routes = [
 export default function Page() {
   const [expandedChat, setExpandedChat] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const posts = useQuery(api.functions.posts.listPosts, { limit: 5 });
+  const { data: todo, isLoading: todoLoading, isError } = useReactQuery({
+    queryKey: ["todo"],
+    queryFn: async () => {
+      return await scrapeEvents();
+    },
+  })
 
   const chatRef = useRef<HTMLButtonElement>(null);
+
+  // Cycle through events every 5 seconds
+  useEffect(() => {
+    if (!todo?.events || todo.events.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentEventIndex((prev) => (prev + 1) % todo.events.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [todo?.events]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -92,8 +113,116 @@ export default function Page() {
               <WeatherWidget className="w-full h-full" />
             </div>
 
+            <div className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-6 col-start-2 animate-slide-up fill-mode-[both] [animation-delay:0.4s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)] transition-transform duration-100 hover:scale-[1.02]">
+              {todoLoading ? (
+                <div className="h-full flex flex-col gap-2 justify-between">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4 rounded-full" />
+                    <Skeleton className="h-5 w-3/4" />
+                  </div>
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-5/6" />
+                  <div className="flex gap-2">
+                    <Skeleton className="h-6 w-20" />
+                    <Skeleton className="h-6 w-24" />
+                  </div>
+                </div>
+              ) : isError || !todo?.events || todo.events.length === 0 ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center text-gray-600">
+                    <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-xs font-medium">No events found</p>
+                    <p className="text-[10px] opacity-75 mt-1">Check back later</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-full w-full flex flex-col overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentEventIndex}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col gap-2 h-full min-h-0"
+                    >
+                      {/* Event Title */}
+                      <div className="flex items-start gap-2 min-h-0">
+                        <div className="shrink-0 mt-0.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 ring-1 ring-blue-200"></div>
+                        </div>
+                        <h3 className="text-sm font-bold text-gray-900 leading-tight line-clamp-2 flex-1 min-w-0">
+                          {todo.events[currentEventIndex].title}
+                        </h3>
+                      </div>
+
+                      {/* Event Description */}
+                      <p className="text-xs text-gray-700 leading-snug line-clamp-2 flex-shrink-0 min-w-0">
+                        {todo.events[currentEventIndex].description}
+                      </p>
+
+                      {/* Event Details - Scrollable if needed */}
+                      <div className="flex flex-col gap-1.5 flex-1 min-h-0 overflow-y-auto">
+                        {todo.events[currentEventIndex].date && (
+                          <div className="flex items-center gap-1.5 text-[11px] text-gray-600 min-w-0">
+                            <Calendar className="w-3 h-3 shrink-0" />
+                            <span className="truncate">
+                              {new Date(todo.events[currentEventIndex].date).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })}
+                            </span>
+                            {todo.events[currentEventIndex].time && (
+                              <>
+                                <Clock className="w-3 h-3 shrink-0" />
+                                <span className="truncate">{todo.events[currentEventIndex].time}</span>
+                              </>
+                            )}
+                          </div>
+                        )}
+                        
+                        {todo.events[currentEventIndex].location && (
+                          <div className="flex items-center gap-1.5 text-[11px] text-gray-600 min-w-0">
+                            <MapPin className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{todo.events[currentEventIndex].location}</span>
+                          </div>
+                        )}
+
+                        {todo.events[currentEventIndex].category && (
+                          <div className="flex items-center gap-1.5">
+                            <Badge 
+                              variant="secondary"
+                              className="px-1.5 py-0.5 h-5 flex items-center gap-1 bg-white/60 text-[10px]"
+                            >
+                              <Tag className="w-2.5 h-2.5" />
+                              <span>{todo.events[currentEventIndex].category}</span>
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Progress Dots */}
+                      <div className="flex items-center justify-center gap-1 pt-1 flex-shrink-0">
+                        {todo.events.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setCurrentEventIndex(index)}
+                            className={cn(
+                              "transition-all duration-300",
+                              index === currentEventIndex 
+                                ? "w-4 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" 
+                                : "w-1 h-1 bg-gray-400 rounded-full hover:bg-gray-500"
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
             <div className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-2 col-start-12 animate-slide-up fill-mode-[both] [animation-delay:0.3s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)] transition-transform duration-150 hover:scale-[1.02]"></div>
-            <div className="bento-card p-4 overflow-hidden row-span-2 col-span-4 row-start-6 col-start-2 animate-slide-up fill-mode-[both] [animation-delay:0.4s] cursor-pointer bg-[rgba(247,241,241,0.59)] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)] transition-transform duration-100 hover:scale-[1.02]"></div>
 
             <div
               className={cn(

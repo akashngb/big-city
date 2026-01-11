@@ -50,11 +50,14 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
+import { DefaultChatTransport } from "ai";
 
 export default function ChatPage() {
   const [input, setInput] = useState("");
   const { messages, sendMessage, status, regenerate } = useChat({
-    api: "/api/chat",
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+    }),
   });
 
   const handleSubmit = (message: PromptInputMessage) => {

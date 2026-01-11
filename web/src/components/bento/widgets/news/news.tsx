@@ -19,7 +19,7 @@ export default function NewsWidget() {
   const [newsData, setNewsData] = useState<any>(null);
   useEffect(() => {
     async function getNews() {
-      const data = await fetchGNews("toronto");
+      const data = await fetchGNews("Toronto OR weather");
       setNewsData(data);
     }
     getNews();

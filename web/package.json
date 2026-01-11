@@ -13,6 +13,7 @@
   "dependencies": {
     "@ai-sdk/react": "^3.0.29",
     "@clerk/nextjs": "^6.36.7",
+    "@googlemaps/places": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@openrouter/ai-sdk-provider": "^1.5.4",
     "@radix-ui/react-accordion": "^1.2.12",

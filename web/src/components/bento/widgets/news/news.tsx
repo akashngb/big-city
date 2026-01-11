@@ -33,7 +33,9 @@ export default function NewsWidget() {
   const news = useQuery<NewsData>({
     queryKey: ["news"],
     queryFn: async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_NEWS_SERVER}/news`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_NEWS_SERVER}/news`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch news");
       }
@@ -117,7 +119,9 @@ export default function NewsWidget() {
               {/* Headline that fades in on hover */}
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                 <h3 className="text-white font-semibold text-lg line-clamp-3">
-                  {article.headline}
+                  {article.headline.length > 100
+                    ? article.headline.slice(0, 100) + "..."
+                    : article.headline}
                 </h3>
                 <p className="text-white/80 text-sm mt-1">{article.source}</p>
               </div>

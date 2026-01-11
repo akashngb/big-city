@@ -21,12 +21,10 @@ import NewsWidget from "@/components/bento/widgets/news/news";
 import { Github } from "@/components/bento/widgets/socials/github";
 import ExpandedWeather from "@/components/bento/widgets/weather/ExpandedWeather";
 import Devpost from "@/components/bento/widgets/socials/devpost";
-import ExpandedNews from "@/components/bento/widgets/news/ExpandedNews";
-import ExpandedEmpty from "@/components/bento/widgets/ExpandedEmpty";
 import BackIcon from "@/components/bento/widgets/map/backIcon";
 import { Badge } from "@/components/ui/badge";
 import { ChatUi } from "@/components/chat";
-import { useState, useEffect, useRef } from "react"; // 1. Added useEffect and useRef
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Linkedin } from "lucide-react";
 import Link from "next/link";
@@ -52,22 +50,16 @@ export default function Page() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const posts = useQuery(api.functions.posts.listPosts, { limit: 5 });
 
-  // 2. Create a ref for the chat container
-  const chatRef = useRef<HTMLButtonElement>(null);
+  const chatRef = useRef(null);
 
-  // 3. Add effect to listen for clicks outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
-        // If chat is expanded and click is outside, close it
+    function handleClickOutside(event) {
+      if (chatRef.current && !chatRef.current.contains(event.target)) {
         setExpandedChat(false);
       }
     }
-
-    // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      // Unbind the event listener on cleanup
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [chatRef]);
@@ -193,7 +185,7 @@ export default function Page() {
             </div>
 
             <motion.button
-              ref={chatRef} // 4. Attach the ref here
+              ref={chatRef}
               layout
               onClick={() => setExpandedChat(true)}
               transition={{ type: "spring", stiffness: 150, damping: 30 }}
@@ -244,8 +236,12 @@ export default function Page() {
               </AnimatePresence>
             </motion.button>
 
-            <div className="row-span-4 col-span-4 row-start-4 col-start-12 flex flex-col transition-transform duration-150 hover:scale-[1.02]">
-              <NewsWidget />
+            <div className="row-span-2 col-span-4 row-start-4 col-start-12 flex flex-col transition-transform duration-150 hover:scale-[1.02] overflow-hidden rounded-2xl min-h-0 min-w-0 h-full w-full bg-[rgba(247,241,241,0.59)] shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]">
+              <NewsWidget className="w-full h-full object-cover" />
+            </div>
+
+            <div className="row-span-2 col-span-4 row-start-6 col-start-12 flex flex-col transition-transform duration-150 hover:scale-[1.02] overflow-hidden rounded-2xl min-h-0 min-w-0 h-full w-full bg-[rgba(247,241,241,0.59)] shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[8.4px] border border-[rgba(247,241,241,0.19)]">
+              <NewsWidget className="w-full h-full object-cover" />
             </div>
           </div>
 

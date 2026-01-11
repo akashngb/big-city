@@ -52,7 +52,6 @@ export default function Page() {
   const [expandedChat, setExpandedChat] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
-  const posts = useQuery(api.functions.posts.listPosts, { limit: 5 });
   const { data: todo, isLoading: todoLoading, isError } = useReactQuery({
     queryKey: ["todo"],
     queryFn: async () => {

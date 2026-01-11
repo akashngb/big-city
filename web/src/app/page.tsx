@@ -5,7 +5,6 @@ import NewsWidget from "@/components/bento/widgets/news/news";
 import { useState } from "react";
 import ExpandedWeather from "../components/bento/widgets/ExpandedWeather";
 import ExpandedNews from "../components/bento/widgets/ExpandedNews";
-import ExpandedCarousel from "../components/bento/widgets/ExpandedCarousel";
 import ExpandedMap from "../components/bento/widgets/ExpandedMap";
 import ExpandedEmpty from "../components/bento/widgets/ExpandedEmpty";
 import {

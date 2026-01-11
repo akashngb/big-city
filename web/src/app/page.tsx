@@ -7,20 +7,8 @@ import ExpandedWeather from "../components/bento/widgets/ExpandedWeather";
 import ExpandedNews from "../components/bento/widgets/ExpandedNews";
 import ExpandedMap from "../components/bento/widgets/ExpandedMap";
 import ExpandedEmpty from "../components/bento/widgets/ExpandedEmpty";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
+import { SignedIn } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function Home() {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);

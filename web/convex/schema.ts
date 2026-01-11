@@ -16,7 +16,7 @@ export default defineSchema({
     userId: v.string(),
     content: v.string(), // markdown
     images: v.array(v.object({
-      url: v.string(),
+      storageId: v.id("_storage"),
       alt: v.string(),
     })),
     location: v.object({

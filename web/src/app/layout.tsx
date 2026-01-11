@@ -12,6 +12,8 @@ import "./globals.css";
 import { Button } from "@/components/ui/button";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
+import Link from "next/link";
+import { PlusIcon } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,9 +38,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <Providers>
-        <html lang="en" className="h-full overflow-hidden">
+        <html lang="en" className="h-full">
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
           >
             <div className="fixed top-4 right-4 z-50">
               <SignedOut>
@@ -47,7 +49,14 @@ export default function RootLayout({
                 </SignInButton>
               </SignedOut>
               <SignedIn>
-                <UserButton />
+                <div className="flex items-center gap-4 h-full justify-center">
+                  <div className="flex items-center h-full">
+                    <Link href="/new" className="text-2xl font-bold flex items-center h-full">
+                      <PlusIcon className="size-5 hover:cursor-pointer" />
+                    </Link>
+                  </div>
+                  <UserButton />
+                </div>
               </SignedIn>
             </div>
             {children}

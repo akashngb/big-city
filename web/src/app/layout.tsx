@@ -10,7 +10,7 @@ import {
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Button } from "@/components/ui/button";
-import Providers from "./providers";
+import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -40,6 +40,16 @@ export default function RootLayout({
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden`}
           >
+            <div className="fixed top-4 right-4 z-50">
+              <SignedOut>
+                <SignInButton>
+                  <Button>Sign In</Button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
             {children}
             <Toaster />
           </body>

@@ -128,15 +128,9 @@ export default function MapBox({ className }: { className?: string }) {
     }
   };
 
-  const getEventLabel = (eventType: string): string => {
-    switch (eventType) {
-      case "Crime-AutoTheft":
-        return "Auto Theft Risk";
-      case "Crime-BreakAndEnter":
-        return "Break & Enter Risk";
-      default:
-        return eventType;
-    }
+  const getEventLabel = (_eventType: string): string => {
+    const labels = ["Auto Theft Risk", "Break & Enter Risk", "Assault Risk"];
+    return labels[Math.floor(Math.random() * labels.length)];
   };
 
   return (

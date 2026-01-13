@@ -1,6 +1,6 @@
 import React from "react";
 
-const BackIcon = (props) => {
+const BackIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       viewBox="0 0 24 24"

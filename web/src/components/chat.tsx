@@ -130,8 +130,9 @@ export function ChatUi() {
                   // Handle tool types (tool-call, tool-result, etc.)
                   if (part.type.startsWith("tool-")) {
                     const toolPart = part as unknown as ToolUIPart;
+                    // if (true) return null;
                     return (
-                      <Tool key={`${message.id}-${i}`} defaultOpen>
+                      <Tool key={`${message.id}-${i}`}>
                         <ToolHeader
                           title={toolPart.title}
                           type={toolPart.type}
